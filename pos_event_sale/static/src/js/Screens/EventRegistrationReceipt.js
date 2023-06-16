@@ -10,8 +10,8 @@ odoo.define("pos_event_sale.EventRegistrationReceipt", function (require) {
     const Registries = require("point_of_sale.Registries");
 
     class EventRegistrationReceipt extends PosComponent {
-        constructor() {
-            super(...arguments);
+        setup() {
+            super.setup();
             this._receiptEnv = this.props.order.getOrderReceiptEnv();
         }
         willUpdateProps(nextProps) {
@@ -28,12 +28,12 @@ odoo.define("pos_event_sale.EventRegistrationReceipt", function (require) {
         }
         get event() {
             const [event_id] = this.registration.event_id || [false];
-            return event_id ? this.env.pos.db.getEventByID(event_id) : undefined;
+            return event_id ? this.db.getEventByID(event_id) : undefined;
         }
         get eventTicket() {
             const [event_ticket_id] = this.registration.event_ticket_id || [false];
             return event_ticket_id
-                ? this.env.pos.db.getEventTicketByID(event_ticket_id)
+                ? this.db.getEventTicketByID(event_ticket_id)
                 : undefined;
         }
         formatDate(date) {

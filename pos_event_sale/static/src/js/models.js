@@ -6,142 +6,65 @@
 odoo.define("pos_event_sale.models", function (require) {
     "use strict";
 
-    const models = require("point_of_sale.models");
+    const {EventEvent} = require('pos_event_sale.EventEvent');
+    const {EventTicket} = require('pos_event_sale.EventTicket');
+    const { PosGlobalState } = require('point_of_sale.models');
+    const Registries = require('point_of_sale.Registries');
 
-    models.load_fields("product.product", ["detailed_type"]);
+    const PosEventSalePosGlobalState = (PosGlobalState) =>
+        class PosEventSalePosGlobalState extends PosGlobalState {
 
-    models.load_models([
-        {
-            model: "event.event",
-            after: "product.product",
-            label: "Events",
-            fields: [
-                "name",
-                "display_name",
-                "event_type_id",
-                "tag_ids",
-                "country_id",
-                "date_begin",
-                "date_end",
-                "date_tz",
-                "seats_limited",
-                "seats_available",
-            ],
-            condition: function (self) {
-                return self.config.iface_event_sale;
-            },
-            domain: function (self) {
-                const domain = [
-                    ["company_id", "in", [false, self.config.company_id[0]]],
-                    ["event_ticket_ids.product_id.active", "=", true],
-                    ["event_ticket_ids.available_in_pos", "=", true],
-                ];
-                if (self.config.iface_available_event_stage_ids.length) {
-                    const event_stage_ids = self.config.iface_available_event_stage_ids;
-                    domain.push(["stage_id", "in", event_stage_ids]);
+            constructor() {
+                super(...arguments);
+            }
+
+            async _processData(loadedData) {
+                await super._processData(...arguments);
+                if (this.config.iface_event_sale) {
+                    await this._load_events(loadedData['event.event']);
+                    await this._load_event_tickets(loadedData['event.event.ticket']);
+                    await this._load_event_tag_categories(loadedData['event.tag.category']);
+                    await this._load_event_tags(loadedData['event.tag']);
                 }
-                if (self.config.iface_available_event_type_ids.length) {
-                    const event_type_ids = self.config.iface_available_event_type_ids;
-                    domain.push(["event_type_id", "in", event_type_ids]);
-                }
-                if (self.config.iface_available_event_tag_ids.length) {
-                    const event_tag_ids = self.config.iface_available_event_tag_ids;
-                    domain.push(["tag_ids", "in", event_tag_ids]);
-                }
-                if (self.config.iface_event_load_days_before >= 0) {
-                    const date_end = moment()
-                        .subtract(self.config.iface_event_load_days_before, "days")
-                        .toDate();
-                    domain.push(["date_end", ">=", date_end]);
-                }
-                if (self.config.iface_event_load_days_after >= 0) {
-                    const date_start = moment()
-                        .add(self.config.iface_event_load_days_after, "days")
-                        .toDate();
-                    domain.push(["date_start", "<=", date_start]);
-                }
-                return domain;
-            },
-            loaded: function (self, records) {
-                self.db.addEvents(
-                    records.map((record) => {
-                        record.pos = self;
-                        return new models.EventEvent({}, record);
+            }
+
+            async _load_events(events) {
+                this.db.addEvents(
+                    events.map((event) => {
+                        event.pos = this;
+                        return EventEvent.create(event);
                     })
                 );
-            },
-        },
-        {
-            model: "event.event.ticket",
-            after: "event.event",
-            label: "Event Tickets",
-            fields: [
-                "name",
-                "description",
-                "event_id",
-                "product_id",
-                "price",
-                "seats_limited",
-                "seats_available",
-            ],
-            condition: function (self) {
-                return self.config.iface_event_sale;
-            },
-            domain: function (self) {
-                const event_ids = Object.keys(self.db.event_by_id).map((id) =>
-                    Number(id)
-                );
-                return [
-                    ["product_id.active", "=", true],
-                    ["available_in_pos", "=", true],
-                    ["event_id", "in", event_ids],
-                ];
-            },
-            loaded: function (self, records) {
-                self.db.addEventTickets(
-                    records.map((record) => {
-                        record.pos = self;
-                        return new models.EventTicket({}, record);
+            }
+
+            async _load_event_tickets (tickets) {
+                this.db.addEventTickets(
+                    tickets.map((ticket) => {
+                        ticket.pos = this;
+                        return EventTicket.create(ticket);
                     })
                 );
-            },
-        },
-        {
-            model: "event.tag.category",
-            after: "event.event",
-            label: "Event Tag Categories",
-            fields: ["name"],
-            condition: function (self) {
-                return self.config.iface_event_sale;
-            },
-            loaded: function (self, records) {
-                self.db.event_tag_category_by_id = {};
-                self.db.event_tags = records;
+            }
+
+            async _load_event_tag_categories (records) {
+                this.db.event_tag_category_by_id = {};
+                this.db.event_tags = records;
                 for (const record of records) {
                     record.tag_ids = [];
-                    self.db.event_tag_category_by_id[record.id] = record;
+                    this.db.event_tag_category_by_id[record.id] = record;
                 }
-            },
-        },
-        {
-            model: "event.tag",
-            after: "event.tag.category",
-            label: "Event Tags",
-            fields: ["name", "category_id", "color"],
-            condition: function (self) {
-                return self.config.iface_event_sale;
-            },
-            loaded: function (self, records) {
-                for (const record of records) {
+            }
+
+            async _load_event_tags(tags) {
+                for (const tag of tags) {
                     const category =
-                        self.db.event_tag_category_by_id[record.category_id[0]];
+                        this.db.event_tag_category_by_id[tag.category_id[0]];
                     if (category) {
-                        category.tag_ids.push(record);
+                        category.tag_ids.push(tag);
                     }
                 }
-            },
-        },
-    ]);
+            }
+        }
 
-    return models;
+        Registries.Model.extend(PosGlobalState, PosEventSalePosGlobalState);
 });

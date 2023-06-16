@@ -21,6 +21,9 @@ odoo.define("pos_event_sale.db", function (require) {
             this.event_ticket_by_id = {};
             this.event_ticket_by_event_id = {};
             this.event_ticket_by_product_id = {};
+
+            this.event_tag_category_by_id = {}
+            this.event_tags = [];
         },
         /**
          * Adds or updates events loaded in the PoS.

@@ -6,8 +6,8 @@
 odoo.define("pos_event_sale.EventSelectorPopup", function (require) {
     "use strict";
 
-    const {useState} = owl.hooks;
-    const {useListener} = require("web.custom_hooks");
+    const {useState} = owl;
+    const { useListener } = require("@web/core/utils/hooks");
     const {getDatesInRange} = require("pos_event_sale.utils");
     const AbstractAwaitablePopup = require("point_of_sale.AbstractAwaitablePopup");
     const Registries = require("point_of_sale.Registries");
@@ -21,8 +21,8 @@ odoo.define("pos_event_sale.EventSelectorPopup", function (require) {
          * @confirmed {Boolean}
          * @payload {Object} Selected event.
          */
-        constructor() {
-            super(...arguments);
+        setup() {
+            super.setup();
             this.state = useState({
                 selectedStartDate: moment().startOf("day").toDate(),
                 selectedEndDate: moment().endOf("day").toDate(),

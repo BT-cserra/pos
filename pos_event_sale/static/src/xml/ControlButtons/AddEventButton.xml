@@ -7,7 +7,7 @@
 <templates id="template" xml:space="preserve">
 
     <t t-name="AddEventButton" owl="1">
-        <span class="control-button">
+        <span class="control-button" t-on-click="onClick">
             <i class="fa fa-ticket" />
             <span>Add Event</span>
         </span>

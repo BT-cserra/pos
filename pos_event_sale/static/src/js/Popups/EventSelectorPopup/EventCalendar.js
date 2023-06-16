@@ -13,8 +13,8 @@ odoo.define("pos_event_sale.EventCalendar", function (require) {
         /**
          * @param {Object} props.eventsByDate Mapping events to their dates.
          */
-        constructor() {
-            super(...arguments);
+        setup() {
+            super.setup();
             this.eventsByDate = this.props.eventsByDate;
         }
         /**

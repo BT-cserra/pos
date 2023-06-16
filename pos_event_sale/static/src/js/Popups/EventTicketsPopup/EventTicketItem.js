@@ -6,7 +6,7 @@
 odoo.define("pos_event_sale.EventTicketItem", function (require) {
     "use strict";
 
-    const {useState} = owl.hooks;
+    const {useState} = owl;
     const PosComponent = require("point_of_sale.PosComponent");
     const Registries = require("point_of_sale.Registries");
 
@@ -15,8 +15,8 @@ odoo.define("pos_event_sale.EventTicketItem", function (require) {
          * @param {Object} props
          * @param {Object} props.eventTicket
          */
-        constructor() {
-            super(...arguments);
+        setup() {
+            super.setup();
             this.state = useState({
                 orderedQty: this.props.eventTicket.getOrderedQuantity(),
                 seatsAvailable: this.props.eventTicket.getSeatsAvailableReal(),
@@ -36,7 +36,7 @@ odoo.define("pos_event_sale.EventTicketItem", function (require) {
         }
         get imageUrl() {
             const product_id = this.props.eventTicket.product_id[0];
-            const product = this.env.pos.db.get_product_by_id(product_id);
+            const product = this.db.get_product_by_id(product_id);
             return `/web/image?model=product.product&field=image_128&id=${product.id}&write_date=${product.write_date}&unique=1`;
         }
         get pricelist() {

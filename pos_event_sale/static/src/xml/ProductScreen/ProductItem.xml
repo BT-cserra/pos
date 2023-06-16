@@ -7,6 +7,7 @@
 <templates id="template" xml:space="preserve">
 
     <t t-inherit="point_of_sale.ProductItem" t-inherit-mode="extension">
+        <!--
         <xpath expr="//*[hasclass('product-info-button')]" position="attributes">
             <attribute
                 name="t-if"
@@ -14,6 +15,7 @@
                 add="props.product.detailed_type != 'event'"
             />
         </xpath>
+        -->
         <xpath expr="//*[hasclass('price-tag')]" position="attributes">
             <attribute
                 name="t-if"
