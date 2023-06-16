@@ -32,7 +32,9 @@ odoo.define("pos_event_sale.models", function (require) {
                 this.db.addEvents(
                     events.map((event) => {
                         event.pos = this;
-                        return EventEvent.create(event, {});
+                        return EventEvent.create(event, {
+                            "db": this.db,
+                        });
                     })
                 );
             }
@@ -41,7 +43,9 @@ odoo.define("pos_event_sale.models", function (require) {
                 this.db.addEventTickets(
                     tickets.map((ticket) => {
                         ticket.pos = this;
-                        return EventTicket.create(ticket, {});
+                        return EventTicket.create(ticket, {
+                            "db": this.db,
+                        });
                     })
                 );
             }
