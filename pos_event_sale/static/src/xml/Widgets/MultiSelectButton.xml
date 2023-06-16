@@ -7,7 +7,7 @@
 <templates id="template" xml:space="preserve">
 
     <t t-name="MultiSelectButton" owl="1">
-        <div class="multi-select-button">
+        <div class="multi-select-button" t-ref="el">
             <button t-on-click="onClick">
                 <i t-if="icon" t-att-class="icon + ' fa'" />
                 <span t-esc="label" />

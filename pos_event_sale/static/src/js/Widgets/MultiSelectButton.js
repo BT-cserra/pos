@@ -7,7 +7,7 @@
 odoo.define("pos_event_sale.MultiSelectButton", function (require) {
     "use strict";
 
-    const { useState, useExternalListener, Component } = owl;
+    const { useRef, useState, useExternalListener, Component } = owl;
     const Registries = require("point_of_sale.Registries");
 
     class MultiSelectButton extends Component {
@@ -15,6 +15,7 @@ odoo.define("pos_event_sale.MultiSelectButton", function (require) {
             super.setup();
             useExternalListener(window, "click", this.onWindowClick, true);
             useExternalListener(window, "keydown", this.onWindowKeydown, true);
+            this.el = useRef('el');  // TODO: Change name?
             this.state = useState({open: false});
         }
 
@@ -55,8 +56,8 @@ odoo.define("pos_event_sale.MultiSelectButton", function (require) {
          */
         onWindowClick(event) {
             if (
-                !this.el.contains(event.target) &&
-                !this.el.contains(document.activeElement)
+                !this.el.el.contains(event.target) &&
+                !this.el.el.contains(document.activeElement)
             ) {
                 this.hideOptions();
             }
