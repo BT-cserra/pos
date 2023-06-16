@@ -7,13 +7,16 @@ odoo.define("pos_event_sale.EventEvent", function (require) {
     "use strict";
 
     const { getDatesInRange } = require("pos_event_sale.utils");
-    const PosComponent = require("point_of_sale.PosComponent");
+    // const { PosGlobalState } = require('point_of_sale.models');
     const Registries = require('point_of_sale.Registries');
+    const { Order } = require('point_of_sale.models');
+    const PosModel = Object.getPrototypeOf(Order)
 
+    class EventEvent extends PosModel{
 
-    class EventEvent extends PosComponent{
-        initialize(attr, options) {
-            Object.assign(this, options);
+        constructor(obj, options) {
+            super(obj);
+            Object.assign(this,  obj);
         }
 
         getEventTickets() {
@@ -81,6 +84,6 @@ odoo.define("pos_event_sale.EventEvent", function (require) {
         }
     }
 
-    Registries.Component.add(EventEvent);
+    Registries.Model.add(EventEvent);
     return EventEvent;
 });

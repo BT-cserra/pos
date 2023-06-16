@@ -6,8 +6,8 @@
 odoo.define("pos_event_sale.models", function (require) {
     "use strict";
 
-    const {EventEvent} = require('pos_event_sale.EventEvent');
-    const {EventTicket} = require('pos_event_sale.EventTicket');
+    const EventEvent = require('pos_event_sale.EventEvent');
+    const EventTicket = require('pos_event_sale.EventTicket');
     const { PosGlobalState } = require('point_of_sale.models');
     const Registries = require('point_of_sale.Registries');
 
@@ -32,7 +32,7 @@ odoo.define("pos_event_sale.models", function (require) {
                 this.db.addEvents(
                     events.map((event) => {
                         event.pos = this;
-                        return EventEvent.create(event);
+                        return EventEvent.create(event, {});
                     })
                 );
             }
@@ -41,7 +41,7 @@ odoo.define("pos_event_sale.models", function (require) {
                 this.db.addEventTickets(
                     tickets.map((ticket) => {
                         ticket.pos = this;
-                        return EventTicket.create(ticket);
+                        return EventTicket.create(ticket, {});
                     })
                 );
             }

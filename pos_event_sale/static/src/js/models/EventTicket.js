@@ -6,12 +6,16 @@ License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 odoo.define("pos_event_sale.EventTicket", function (require) {
     "use strict";
 
-    const PosComponent = require("point_of_sale.PosComponent");
+    // const { PosGlobalState } = require('point_of_sale.models');
     const Registries = require('point_of_sale.Registries');
+    const { Order } = require('point_of_sale.models');
+    const PosModel = Object.getPrototypeOf(Order)
 
-    class EventTicket extends PosComponent{
-        initialize(attr, options) {
-            Object.assign(this, options);
+    class EventTicket extends PosModel {
+
+        constructor(obj, options) {
+            super(obj);
+            Object.assign(this,  obj);
         }
 
         getEvent() {
@@ -83,6 +87,6 @@ odoo.define("pos_event_sale.EventTicket", function (require) {
         }
     }
 
-    Registries.Component.add(EventTicket);
+    Registries.Model.add(EventTicket);
     return EventTicket;
 });
