@@ -15,6 +15,8 @@ odoo.define("pos_event_sale.EventTicket", function (require) {
 
         constructor(obj, options) {
             super(obj);
+            this.db = options.db;
+            this.env = options.env;
             Object.assign(this,  obj);
         }
 

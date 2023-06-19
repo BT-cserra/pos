@@ -83,11 +83,11 @@ class PosSession(models.Model):
         return self.env['event.event.ticket'].search_read(**params['search_params'])
 
     def _loader_params_event_event_ticket(self):
-        event_ids = []  # TODO: `self.db.event_by_id` obtain keys of this.
+        events = self.env['event.event'].search(self._loader_params_event_event()['search_params']['domain'])
         domain = [
             ("product_id.active", "=", True),
             ("available_in_pos", "=", True),
-            ("event_id", "in", event_ids),
+            ("event_id", "in", events.ids),
         ]
 
         fields_list = [

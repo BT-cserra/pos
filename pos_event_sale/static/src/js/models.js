@@ -34,6 +34,7 @@ odoo.define("pos_event_sale.models", function (require) {
                         event.pos = this;
                         return EventEvent.create(event, {
                             "db": this.db,
+                            "env": this.env,
                         });
                     })
                 );
@@ -45,6 +46,7 @@ odoo.define("pos_event_sale.models", function (require) {
                         ticket.pos = this;
                         return EventTicket.create(ticket, {
                             "db": this.db,
+                            "env": this.env,
                         });
                     })
                 );
