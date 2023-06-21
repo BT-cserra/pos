@@ -11,6 +11,7 @@ odoo.define("pos_event_sale.EventSelectorPopup", function (require) {
     const {getDatesInRange} = require("pos_event_sale.utils");
     const AbstractAwaitablePopup = require("point_of_sale.AbstractAwaitablePopup");
     const Registries = require("point_of_sale.Registries");
+    // const { useFullCalendar } = require("@web/views/calendar/hooks");
 
     class EventSelectorPopup extends AbstractAwaitablePopup {
         /**
